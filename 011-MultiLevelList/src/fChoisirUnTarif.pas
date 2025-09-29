@@ -65,8 +65,8 @@ type
     ListeLignes: TListView;
     procedure FormCreate(Sender: TObject);
     procedure FormResize(Sender: TObject);
-    procedure ListeLignesItemClick(const Sender: TObject;
-      const AItem: TListViewItem);
+    procedure ListeLignesitem1Click(const Sender: TObject;
+      const Aitem1: TListViewitem1);
   private
     { Déclarations privées }
     FCategorieEnCours: integer;
@@ -77,7 +77,7 @@ type
     procedure ClickSurCategorie(Sender: TObject);
     procedure AfficheLesCategories;
     procedure AfficheLaListe;
-    procedure DoChoisirUnTarif(const AItem: TListViewItem);
+    procedure DoChoisirUnTarif(const Aitem1: TListViewitem1);
   public
     { Déclarations publiques }
     class procedure Execute(CallbackProc: TCallbackChoisirUnTarifProc);
@@ -94,32 +94,21 @@ uses
   uDBPourAffichage, uDownloadAndGetFiles, System.Math;
 { TChoisirUnTarif }
 
-procedure TChoisirUnTarif.AfficheLaListe;
-begin
-  zoneCategories.Visible := false;
-  ListeLignes.Visible := true;
-end;
-
-procedure TChoisirUnTarif.AfficheLesCategories;
-begin
-  zoneCategories.Visible := true;
-  ListeLignes.Visible := false;
-end;
 
 procedure TChoisirUnTarif.ChargeLaListe(MereCode: integer);
 var
   qry: tfdquery;
-  item: TListViewItem;
+  item1: TListViewitem1;
 begin
   ListeLignes.BeginUpdate;
   try
-    ListeLignes.items.Clear;
+    ListeLignes.item1s.Clear;
     FCategorieEnCours := MereCode;
-    item := ListeLignes.items.Add;
-    item.Purpose := TListItemPurpose.none;
-    item.Text := '< Retour';
-    item.Tag := -1;
-    item.Accessory := TAccessoryType.Detail; // TODO : masquer l'accessoire
+    item1 := ListeLignes.item1s.Add;
+    item1.Purpose := TListitem1Purpose.none;
+    item1.Text := '< Retour';
+    item1.Tag := -1;
+    item1.Accessory := TAccessoryType.Detail; // TODO : masquer l'accessoire
     qry := tfdquery.Create(self);
     try
       qry.Connection := dmDBPourAffichage.dbCategories;
@@ -127,32 +116,32 @@ begin
         [MereCode]);
       while not qry.eof do
       begin
-        item := ListeLignes.items.Add;
-        item.Purpose := TListItemPurpose.none;
-        item.Text := qry.FieldByName('libelle').asstring;
-        item.Tag := qry.FieldByName('code').asinteger;
+        item1 := ListeLignes.item1s.Add;
+        item1.Purpose := TListitem1Purpose.none;
+        item1.Text := qry.FieldByName('libelle').asstring;
+        item1.Tag := qry.FieldByName('code').asinteger;
         if (0 = dmDBPourAffichage.dbCategories.ExecSQLScalar
           ('select code from categories where categorie_mere_code=:c limit 0,1',
-          [item.Tag])) then
+          [item1.Tag])) then
         begin
-          item.TagString := 'ok';
-          item.Accessory := TAccessoryType.checkmark;
+          item1.TagString := 'ok';
+          item1.Accessory := TAccessoryType.checkmark;
         end
         else
         begin
-          item.TagString := '';
-          item.Accessory := TAccessoryType.more;
+          item1.TagString := '';
+          item1.Accessory := TAccessoryType.more;
         end;
         qry.next;
       end;
     finally
       qry.free;
     end;
-    item := ListeLignes.items.Add;
-    item.Purpose := TListItemPurpose.none;
-    item.Text := '<< Quitter';
-    item.Tag := -2;
-    item.Accessory := TAccessoryType.Detail; // TODO : masquer l'accessoire
+    item1 := ListeLignes.item1s.Add;
+    item1.Purpose := TListitem1Purpose.none;
+    item1.Text := '<< Quitter';
+    item1.Tag := -2;
+    item1.Accessory := TAccessoryType.Detail; // TODO : masquer l'accessoire
   finally
     ListeLignes.EndUpdate;
   end;
@@ -193,6 +182,18 @@ begin
   RecalculeHauteurListeCategories;
 end;
 
+procedure TChoisirUnTarif.AfficheLaListe;
+begin
+  zoneCategories.Visible := false;
+  ListeLignes.Visible := true;
+end;
+
+procedure TChoisirUnTarif.AfficheLesCategories;
+begin
+  zoneCategories.Visible := true;
+  ListeLignes.Visible := false;
+end;
+
 procedure TChoisirUnTarif.ClickSurCategorie(Sender: TObject);
 begin
   ChargeLaListe((Sender as timage).Tag);
@@ -210,11 +211,11 @@ begin
     end);
 end;
 
-procedure TChoisirUnTarif.DoChoisirUnTarif(const AItem: TListViewItem);
+procedure TChoisirUnTarif.DoChoisirUnTarif(const Aitem1: TListViewitem1);
 begin
   close;
-  if assigned(AItem) then
-    FonChoisirUnTarifProc(AItem.Tag)
+  if assigned(Aitem1) then
+    FonChoisirUnTarifProc(Aitem1.Tag)
   else
     FonChoisirUnTarifProc(-1);
   tthread.ForceQueue(nil,
@@ -249,12 +250,12 @@ begin
   RecalculeHauteurListeCategories;
 end;
 
-procedure TChoisirUnTarif.ListeLignesItemClick(const Sender: TObject;
-const AItem: TListViewItem);
+procedure TChoisirUnTarif.ListeLignesitem1Click(const Sender: TObject;
+const Aitem1: TListViewitem1);
 var
   MereCode: integer;
 begin
-  if AItem.Tag = -1 then // Retour
+  if Aitem1.Tag = -1 then // Retour
   begin
     MereCode := dmDBPourAffichage.dbCategories.ExecSQLScalar
       ('select categorie_mere_code from categories where code=:c',
@@ -264,12 +265,12 @@ begin
     else
       ChargeLaListe(MereCode);
   end
-  else if AItem.Tag = -2 then // Quitter = abandonner la sélection
+  else if Aitem1.Tag = -2 then // Quitter = abandonner la sélection
     DoChoisirUnTarif(nil)
-  else if AItem.TagString.IsEmpty then // Niveau suivant
-    ChargeLaListe(AItem.Tag)
+  else if Aitem1.TagString.IsEmpty then // Niveau suivant
+    ChargeLaListe(Aitem1.Tag)
   else // Element sélectionné
-    DoChoisirUnTarif(AItem);
+    DoChoisirUnTarif(Aitem1);
 end;
 
 procedure TChoisirUnTarif.RecalculeHauteurListeCategories;
