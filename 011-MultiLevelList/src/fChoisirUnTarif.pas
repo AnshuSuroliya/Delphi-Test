@@ -233,7 +233,7 @@ begin
   frm := TChoisirUnTarif.Create(application);
   frm.FonChoisirUnTarifProc := CallbackProc;
 {$IF Defined(ANDROID) or Defined(IOS)}
-  frm.Show
+  frm.Show;
 {$ELSE}
   frm.ShowModal;
 {$ENDIF}
