@@ -15,30 +15,44 @@ type
     procedure ConsumeField;
   end;
 
+  TMathOperations = class  // ← MOVED HERE
+  public
+    function Addition(a, b: Integer): Integer; overload;
+  end;
+
 implementation
 
 procedure ConsumeGlobals;
 var
   LocalVal: Integer;
 begin
-  // Direct usage of global from interface of another unit
   LocalVal := GlobalInt + 10;
-  
-  // Usage as argument
   WriteLn(GlobalStr);
-  
-  // Usage in calculation
   if GlobalDouble > 2.0 then
     WriteLn('Large double');
+  WriteLn('Boolean value: ', GlobalBool);
+  WriteLn('Character value: ', GlobalChar);
 end;
 
 { TDemoClass }
 
 procedure TDemoClass.ConsumeField;
+var
+  Math: TMathOperations;
+  intResult: Integer;
 begin
-  // Usage of class field (declared in interface class definition)
   FClassField := FClassField + 1;
-  WriteLn(FClassField);
+  Math := TMathOperations.Create;
+  intResult := Math.Addition(10, GlobalInt);
+  WriteLn(intResult);
+  Math.Free;
+end;
+
+{ TMathOperations }
+
+function TMathOperations.Addition(a, b: Integer): Integer;
+begin
+  Result := a + b;
 end;
 
 end.

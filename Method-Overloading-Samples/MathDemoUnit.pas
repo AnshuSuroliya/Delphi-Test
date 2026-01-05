@@ -5,7 +5,8 @@ interface
 uses
   SysUtils,
   MathOperations,
-  ComplexNumberFactory;
+  ComplexNumberFactory,
+  GlobalVars;
 
 procedure RunMathDemo;
 
@@ -23,6 +24,8 @@ var
   complex1, complex2, complexSum: TComplexNumber;
 begin
   Math := TMathOperations.Create;
+  intResult := Math.Add(GlobalAddend1, GlobalAddend2);
+  WriteLn('Global addition result: ', intResult);
   intResult := Math.Add(10, 20);
   WriteLn('First demonstration:');
   WriteLn('10 + 20 = ', intResult);
