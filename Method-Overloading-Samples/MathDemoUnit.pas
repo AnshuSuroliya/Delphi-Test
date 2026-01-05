@@ -29,8 +29,8 @@ begin
   intResult := Math.Add(10, 20);
   WriteLn('First demonstration:');
   WriteLn('10 + 20 = ', intResult);
-  dblResult := Math.Add(15.75, 25.25);
-  strResult := Math.Add('Hello, ', 'Delphi!');
+  dblResult := Math.Add(GlobalDouble, 25.25);
+  strResult := Math.Add(GlobalStr, 'Delphi!');
   WriteLn(strResult);
   WriteLn(#13#10'Second demonstration:');
   dblResult := Math.Add(10, 15.5);
