@@ -70,18 +70,6 @@ begin
   WriteLn(#13#10'2D Point Addition:');
   WriteLn(Format('%s + %s = %s', [point1.ToString, point2.ToString, pointSum.ToString]));
   
-  complex1 := TComplexNumber.Create(2, 3);
-  complex2 := TComplexNumber.Create(1, -2);
-  WriteLn(#13#10'Complex Number Addition:');
-  complexSum := Math.Add(complex1, complex2);
-  WriteLn(Format('%s + %s = %s', [complex1.ToString, complex2.ToString, complexSum.ToString]));
-  WriteLn(#13#10'Complex + Double Addition:');
-  complexSum := Math.Add(complex1, 5.5);
-  WriteLn(Format('%s + 5.5 = %s', [complex1.ToString, complexSum.ToString]));
-  complex1.Free;
-  complex2.Free;
-  complexSum.Free;
-  
   WriteLn(#13#10'Press Enter to exit...');
   ReadLn;
 end;
